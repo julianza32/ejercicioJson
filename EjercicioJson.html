@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>JSON Ejercicio</title>
+
+</head>
+
+<body>
+    <div id="contenido" class="d-flex flex-row flex-wrap justify-content-center">
+        <div class="form-group w-50 m-1">
+            <label for="id">Identificación</label>
+            <input type="text" class="form-control" id="iden" placeholder="Ingrese su id">
+        </div>
+        <div class="form-group w-50 m-1">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" class="form-control" placeholder="Ingrese su nombre">
+        </div>
+        <div class="form-group w-50 m-1">
+            <label for="apellido">Apellido</label>
+            <input type="text" id="apellido" class="form-control" placeholder="Ingrse su apellido">
+        </div>
+        <div class="form-group w-50 m-1">
+            <label for="universidad">Universidad</label>
+            <input type="text" id="universidad" class="form-control" value="U.nal" disabled>
+        </div>
+        <div class="form-group w-50 m-1">
+            <label for="sede">Sede</label>
+            <input id="sede" type="text" class="form-control" placeholder="sede">
+        </div>
+        <div class="form-group w-50 m-1">
+            <label for="horario">Horario</label>
+            <select class="form-control" id="horario">
+                <option value="7 am - 10 am">7 am - 10 am</option>
+                <option value="10 am - 1 pm">10 am - 1 pm</option>
+                <option value="2 pm - 5 pm">2 pm - 5 pm</option>
+                <option value="6 pm - 9 pm">6 pm - 9 pm</option>
+            </select>
+        </div>
+        <div class="btn-group w-50 m-1" role="group" aria-label="Basic example">
+            <button class="btn btn-primary" id="agregar" onclick="validar()">Agregar</button>
+            <button class="btn btn-primary" id="consultar" onclick="btnconsultar()">Consultar</button>
+            <button class="btn btn-primary" id="editar" onclick="editar()">Editar</button>
+        </div>
+    </div>
+
+
+    <script>
+        let identificacion = document.getElementById('iden');
+        let nombre = document.getElementById('nombre');
+        let apellido = document.getElementById('apellido');
+        let universidad = document.getElementById('universidad');
+        let sede = document.getElementById('sede');
+        let horario = document.getElementById('horario');
+        let btnAgregar = document.getElementById('agregar');
+        let btnConsultar = document.getElementById('consultar').disabled = true;
+        let btnEditar = document.getElementById('editar').disabled = true;
+        let arrayEstudiantes = [];
+        let contador = 0;
+        let existe = false;
+        let validacion = true;
+
+
+
+
+        function validar() {
+            if (identificacion.value == "") {
+                alert("Ingrese identificacion");
+                validacion = false;
+            } else {
+                if (nombre.value == "") {
+                    alert("Ingrese nombre");
+                    validacion = false;
+                } else {
+                    if (apellido.value == "") {
+                        alert("Ingrese apellido");
+                        validacion = false;
+                    } else {
+                        if (sede.value == "") {
+                            alert("Ingrese sede");
+                            validacion = false;
+                        } else {
+                            validacion=true;
+                            if (validacion == true) {
+                                btnagregar();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        let estudianteJS = JSON.parse(localStorage.getItem('estudiantes'));
+        if (estudianteJS == null) {
+
+        } else {
+            btnConsultar = document.getElementById('consultar').disabled = false;
+            cantidadPersonas = estudianteJS.length;
+            for (i = 0; i < cantidadPersonas; i++) {
+                arrayEstudiantes[i] = estudianteJS[i];
+            }
+        }
+
+        function agregar() {
+            consultar()
+            estudiante = {
+                'identificacionJson': identificacion.value,
+                'nombreJson': nombre.value,
+                'apellidoJson': apellido.value,
+                'universidadJson': universidad.value,
+                'sedeJson': sede.value,
+                'horarioJson': horario.value
+            }
+            arrayEstudiantes[contador] = estudiante;
+
+            localStorage.setItem(`estudiantes`, JSON.stringify(arrayEstudiantes));
+            alert("Se ingreso correctamente");
+            identificacion.value = "";
+            nombre.value = "";
+            apellido.value = "";
+            sede.value = "";
+            horario.value = "7 am - 10 am";
+            contador++;
+             btnConsultar = document.getElementById('consultar').disabled = false;
+
+        }
+
+        function consultar() {
+            let estudianteJS = JSON.parse(localStorage.getItem('estudiantes'));
+            if (estudianteJS == null) {
+                existe = false
+            } else {
+                cantidadPersonas = estudianteJS.length;
+                for (i = 0; i < cantidadPersonas; i++) {
+                    posicion = estudianteJS[i];
+                    arrayEstudiantes[i] = posicion;
+                    existe = true
+                }
+            }
+            return arrayEstudiantes;
+        }
+
+        function btnagregar() {
+            estudianteJS = JSON.parse(localStorage.getItem('estudiantes'));
+            if (estudianteJS == null) {
+                agregar();
+            } else {
+                cantidadPersonas = estudianteJS.length;
+                for (i = 0; i <= cantidadPersonas - 1; i++) {
+                    posicion = estudianteJS[i];
+                    identificacionPe = posicion.identificacionJson;
+                    if (identificacion.value == identificacionPe) {
+                        alert("el registro ya existe");
+                        existe = true;
+                        break;
+                    }
+                    else {
+                        existe = false;
+                    }
+
+                } if (existe == false) {
+                    agregar();
+                    let btnConsultar = document.getElementById('consultar').disabled = false;
+
+                }
+            }
+        }
+
+        function btnconsultar() {
+            if (identificacion.value != "") {
+                estudianteJS = JSON.parse(localStorage.getItem('estudiantes'));
+                cantidadPersonas = estudianteJS.length;
+                for (i = 0; i < cantidadPersonas; i++) {
+                    posicion = estudianteJS[i];
+                    identificacionPe = posicion.identificacionJson;
+                    if (identificacion.value == identificacionPe) {
+                        alert("Se encontro");
+                        identificacion.value = posicion.identificacionJson;
+                        nombre.value = posicion.nombreJson;
+                        apellido.value = posicion.apellidoJson;
+                        sede.value = posicion.sedeJson;
+                        horario.value = posicion.horarioJson;
+                        identificacion.setAttribute("disabled", "disabled");
+                        btnEditar = document.getElementById('editar').disabled = false;
+                        btnEditar = document.getElementById('agregar').disabled = true;
+
+                    }else{
+                        alert("no se encontraron resultados");
+                    }
+                }
+            }
+            else {
+                alert("Ingrese el campo identificacion para consultar");
+            }
+
+        }
+
+        function editar() {
+            estudianteJS = JSON.parse(localStorage.getItem('estudiantes'));
+            cantidadPersonas = estudianteJS.length;
+            let identificacionArray;
+            consultar();
+            arrayEstudiantes;
+            for (i = 0; i < arrayEstudiantes.length; i++) {
+
+                identificacionArray = arrayEstudiantes[i].identificacionJson;
+                if (identificacionArray == identificacion.value) {
+                    estudiante = {
+                        'identificacionJson': identificacion.value,
+                        'nombreJson': nombre.value,
+                        'apellidoJson': apellido.value,
+                        'universidadJson': universidad.value,
+                        'sedeJson': sede.value,
+                        'horarioJson': horario.value
+                    }
+                    arrayEstudiantes[i] = estudiante;
+                    for (j = 0; j < cantidadPersonas; j++) {
+                        posicion = estudianteJS[j];
+                        identificacionPe = posicion.identificacionJson;
+                        if (identificacion.value == identificacionPe) {
+                            localStorage.setItem(`estudiantes`, JSON.stringify(arrayEstudiantes));
+                            alert("Se edito correctamente");
+                            identificacion.value = "";
+                            nombre.value = "";
+                            apellido.value = "";
+                            sede.value = "";
+                            horario.value = "7 am - 10 am";
+                            btnEditar = document.getElementById('editar').disabled = true;
+                            btnEditar = document.getElementById('consultar').disabled = false;
+                            btnEditar = document.getElementById('agregar').disabled = false;
+                            identificacion.removeAttribute("disabled");
+
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <!-- Compiled and minified JavaScript -->
+
+
+</body>
+
+</html>
